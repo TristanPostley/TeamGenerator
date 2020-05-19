@@ -10,14 +10,143 @@ const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
 
+const employees = [];
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+AddNewEmployee = () => {
+
+    inquirer.prompt([
+        {
+        type: "list",
+        message: "What type of employee would you like to add?",
+        choices: ["Manager", "Engineer", "Intern", "I'm finished"],
+        name: "EmployeeType"
+        }
+    ])  
+    .then(answer => {
+        switch(answer.EmployeeType) {
+            case "Manager":
+                MakeManager();
+                break;
+            case "Engineer":
+                MakeEngineer();
+                break;
+            case "Intern":
+                MakeIntern();
+                break;
+            case "I'm finished":
+                CreateHTML();    
+                break;
+        }
+    })
+}
+
+MakeManager = () => {
+    inquirer.prompt([
+        {
+            type: "Input",
+            message: "What is their name?",
+            name: "name"
+        },
+        {
+            type: "Input",
+            message: "What is their email address?",
+            name: "email"
+        },
+        {
+            type: "Input",
+            message: "What is their ID number?",
+            name: "id"
+        },
+        {
+            type: "Input",
+            message: "What is their office number?",
+            name: "officeNumber"
+        }
+    ])
+        .then(answer => {
+            let employee = new Manager(answer.name, answer.id, answer.email, answer.officeNumber);
+            employees.push(employee);
+
+            AddNewEmployee();
+        })
+}
+
+MakeEngineer = () => {
+    inquirer.prompt([
+        {
+            type: "Input",
+            message: "What is their name?",
+            name: "name"
+        },
+        {
+            type: "Input",
+            message: "What is their email address?",
+            name: "email"
+        },
+        {
+            type: "Input",
+            message: "What is their ID number?",
+            name: "id"
+        },
+        {
+            type: "Input",
+            message: "What is their GitHib username?",
+            name: "github"
+        }
+    ])
+        .then(answer => {
+            let employee = new Engineer(answer.name, answer.id, answer.email, answer.github);
+            employees.push(employee);
+
+            AddNewEmployee();
+        })
+}
+
+MakeIntern = () => {
+    inquirer.prompt([
+        {
+            type: "Input",
+            message: "What is their name?",
+            name: "name"
+        },
+        {
+            type: "Input",
+            message: "What is their email address?",
+            name: "email"
+        },
+        {
+            type: "Input",
+            message: "What is their ID number?",
+            name: "id"
+        },
+        {
+            type: "Input",
+            message: "What is their school?",
+            name: "school"
+        }
+    ])
+        .then(answer => {
+            let employee = new Intern(answer.name, answer.id, answer.email, answer.school);
+            employees.push(employee);
+
+            AddNewEmployee();
+        })
+}
+
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
 // generate and return a block of HTML including templated divs for each employee!
+CreateHTML = () => {
+    console.log(employees);
+    var html = render(employees);
+    fs.writeFile(outputPath, html, err => {
+        if (err) console.log("ERROR " + err);
+    });
 
+}
 // After you have your html, you're now ready to create an HTML file using the HTML
 // returned from the `render` function. Now write it to a file named `team.html` in the
 // `output` folder. You can use the variable `outputPath` above target this location.
@@ -34,9 +163,4 @@ const render = require("./lib/htmlRenderer");
 // object with the correct structure and methods. This structure will be crucial in order
 // for the provided `render` function to work! ```
 
-// const b = new Employee("Joe", "mook");
-
-const c = new Intern("Karl", "email", );
-
-// console.log(b);
-console.log(c.getName());
+AddNewEmployee();
